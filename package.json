@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "A comprehensive Twitch MCP server providing chat moderation, stream management, and Twitch API integration tools",
 	"main": "build/index.js",
+	"module": "./src/index.ts",
 	"type": "module",
 	"scripts": {
 		"dev": "npx @smithery/cli dev",
