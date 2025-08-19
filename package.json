@@ -6,9 +6,11 @@
 	"module": "./src/index.ts",
 	"type": "module",
 	"scripts": {
-		"dev": "npx @smithery/cli dev",
+		"dev": "npx @smithery/cli dev src/index.ts --no-open",
 		"build": "tsc",
-		"start": "node build/index.js"
+		"start": "node build/index.js",
+		"test:smithery": "node test-smithery.js",
+		"smithery:build": "npx @smithery/cli build src/index.ts"
 	},
 	"keywords": [
 		"twitch",
