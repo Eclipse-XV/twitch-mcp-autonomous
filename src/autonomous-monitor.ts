@@ -4,10 +4,10 @@ import {
   ChatMessage, 
   ActionDecision,
   FeedbackEntry
-} from './autonomous-types.js';
-import { AIPatternAnalyzer, AIAnalysisFunction } from './pattern-analyzer.js';
-import { AIDecisionEngine } from './decision-engine.js';
-import { FeedbackRecorder } from './feedback-recorder.js';
+} from './autonomous-types';
+import { AIPatternAnalyzer, AIAnalysisFunction } from './pattern-analyzer';
+import { AIDecisionEngine } from './decision-engine';
+import { FeedbackRecorder } from './feedback-recorder';
 
 interface AutonomousMonitorConfig {
   autonomous: AutonomousConfig;

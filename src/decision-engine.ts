@@ -3,8 +3,8 @@ import {
   ActionDecision, 
   AutonomousConfig, 
   ChatAnalysisResult 
-} from './autonomous-types.js';
-import { AIAnalysisFunction } from './pattern-analyzer.js';
+} from './autonomous-types';
+import { AIAnalysisFunction } from './pattern-analyzer';
 
 // Available MCP tools and their parameters
 interface MCPTool {

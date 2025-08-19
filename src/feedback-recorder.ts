@@ -5,7 +5,7 @@ import {
   ActionDecision, 
   AutonomousState,
   ChatPattern 
-} from './autonomous-types.js';
+} from './autonomous-types';
 
 interface FeedbackRecorderConfig {
   feedbackDir: string;
@@ -411,7 +411,7 @@ export class FeedbackRecorder {
         const key = `${pattern.type}-${Math.floor(pattern.severity / 2)}`;
         const current = patternSuccessRates.get(key) || { total: 0, successful: 0 };
         current.total++;
-        if (entry.userFeedback?.rating >= 3 || entry.outcome?.effective) {
+        if ((entry.userFeedback && entry.userFeedback.rating >= 3) || entry.outcome?.effective) {
           current.successful++;
         }
         patternSuccessRates.set(key, current);

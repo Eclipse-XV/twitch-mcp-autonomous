@@ -1,1 +1,102 @@
 runtime: typescript
+entry: src/index.ts
+config_schema:
+  debug:
+    type: boolean
+    default: false
+    description: Enable debug logging
+  twitchClientId:
+    type: string
+    description: Twitch Client ID for API access
+  twitchAuthToken:
+    type: string
+    description: Twitch OAuth token (without 'oauth:' prefix)
+  twitchBroadcasterId:
+    type: string
+    description: Twitch broadcaster user ID
+  twitchChannel:
+    type: string
+    description: Twitch channel name for chat monitoring
+  autonomous:
+    type: object
+    description: Autonomous monitoring configuration
+    properties:
+      enabled:
+        type: boolean
+        default: false
+        description: Enable autonomous monitoring at startup
+      monitoringInterval:
+        type: integer
+        default: 5000
+        description: Monitoring interval in milliseconds
+      rules:
+        type: object
+        description: Autonomous monitoring rules
+        properties:
+          spamDetection:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: true
+              threshold:
+                type: number
+                default: 5
+              action:
+                type: string
+                enum: ["timeout", "ban", "warn"]
+                default: timeout
+              duration:
+                type: number
+                default: 300
+          toxicityDetection:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: true
+              severityThreshold:
+                type: number
+                default: 6
+              action:
+                type: string
+                enum: ["timeout", "ban", "warn"]
+                default: timeout
+              duration:
+                type: number
+                default: 1800
+          chatEngagement:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: false
+              quietPeriodThreshold:
+                type: number
+                default: 10
+              responses:
+                type: array
+                items:
+                  type: string
+                default: ["Hey chat! How is everyone doing?", "Any questions about the game?"]
+          pollAutomation:
+            type: object
+            properties:
+              enabled:
+                type: boolean
+                default: false
+              trigger:
+                type: string
+                enum: ["viewerRequest", "scheduled", "gameEvent"]
+                default: viewerRequest
+              cooldown:
+                type: number
+                default: 15
+  feedbackDir:
+    type: string
+    default: autonomous_feedback
+    description: Directory for autonomous feedback storage
+  maxFeedbackRetentionDays:
+    type: integer
+    default: 30
+    description: Days to retain feedback data

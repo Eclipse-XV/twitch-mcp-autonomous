@@ -2,13 +2,12 @@
 	"name": "twitch-mcp-server",
 	"version": "1.0.0",
 	"description": "A comprehensive Twitch MCP server providing chat moderation, stream management, and Twitch API integration tools",
-	"main": "index.js",
-	"module": "./src/index.ts",
+	"main": "build/index.js",
 	"type": "module",
 	"scripts": {
 		"dev": "npx @smithery/cli dev",
-		"build": "npx tsx src/index.ts",
-		"test": "npx tsx src/index.ts"
+		"build": "tsc",
+		"start": "node build/index.js"
 	},
 	"keywords": [
 		"twitch",
@@ -27,6 +26,9 @@
 	},
 	"devDependencies": {
 		"@smithery/cli": "^1.2.4",
-		"tsx": "^4.19.4"
+		"@types/node": "^20.0.0",
+		"@types/tmi.js": "^1.8.6",
+		"tsx": "^4.19.4",
+		"typescript": "^5.0.0"
 	}
 }

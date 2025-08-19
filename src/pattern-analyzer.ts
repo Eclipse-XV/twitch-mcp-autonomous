@@ -1,4 +1,4 @@
-import { ChatPattern, ChatAnalysisResult, ChatMessage } from './autonomous-types.js';
+import { ChatPattern, ChatAnalysisResult, ChatMessage } from './autonomous-types';
 
 // AI agent prompt templates for intelligent pattern detection
 const ANALYSIS_PROMPTS = {

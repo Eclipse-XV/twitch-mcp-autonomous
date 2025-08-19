@@ -1,8 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { Client } from "tmi.js";
-import { AutonomousMonitor } from "./autonomous-monitor.js";
-import { AutonomousConfig, ChatMessage as AutonomousMessage, AIAnalysisFunction } from "./autonomous-types.js";
+import { AutonomousMonitor } from "./autonomous-monitor";
+import { AutonomousConfig, ChatMessage as AutonomousMessage } from "./autonomous-types";
+import { AIAnalysisFunction } from "./pattern-analyzer";
 import path from "path";
 
 // Configuration schema for Twitch API credentials
@@ -39,7 +40,16 @@ export const configSchema = z.object({
         cooldown: z.number().default(15)
       })
     })
-  }).default({}),
+  }).default(() => ({
+    enabled: false,
+    monitoringInterval: 5000,
+    rules: {
+      spamDetection: { enabled: true, threshold: 5, action: 'timeout' as 'timeout', duration: 300 },
+      toxicityDetection: { enabled: true, severityThreshold: 6, action: 'timeout' as 'timeout', duration: 1800 },
+      chatEngagement: { enabled: false, quietPeriodThreshold: 10, responses: ['Hey chat! How is everyone doing?'] },
+      pollAutomation: { enabled: false, trigger: 'viewerRequest' as 'viewerRequest', cooldown: 15 }
+    }
+  })),
   feedbackDir: z.string().default(path.join(process.cwd(), 'autonomous_feedback')).describe("Directory for autonomous feedback storage"),
   maxFeedbackRetentionDays: z.number().int().default(30).describe("Days to retain feedback data")
 });
@@ -103,7 +113,8 @@ export default function createStatelessServer({
       }
       return json;
     } catch (error) {
-      return `[JSON stringify error: ${error.message}]`;
+      const err = error as Error;
+      return `[JSON stringify error: ${err.message}]`;
     }
   }
 
@@ -255,7 +266,7 @@ export default function createStatelessServer({
       }
     } catch (error) {
       const err = error as TwitchApiError;
-      return { success: false, result: null, error: err.message || error.message || 'Unknown error' };
+      return { success: false, result: null, error: err.message || (error as Error).message || 'Unknown error' };
     }
   };
 
@@ -304,12 +315,12 @@ export default function createStatelessServer({
     } catch (error) {
       console.error('Failed to initialize AutonomousMonitor:', error);
     }
-  }).catch((error) => {
+  }).catch((error: Error) => {
     console.error('Failed to connect to Twitch IRC:', error);
   });
 
   // Listen for incoming chat messages and add them to our log
-  tmiClient.on('message', (channel, tags, message, self) => {
+  tmiClient.on('message', (channel: string, tags: any, message: string, self: boolean) => {
     if (!self) { // Don't log our own messages
       const username = tags.username || tags['display-name'] || 'unknown';
       const content = message;
@@ -380,13 +391,14 @@ export default function createStatelessServer({
 
       return await response.json();
     } catch (error) {
-      if (error.error) {
+      const err = error as any;
+      if (err.error) {
         throw error; // Re-throw our formatted error
       }
       throw {
         error: 'NETWORK_ERROR', 
         status: 0, 
-        message: error.message || 'Network request failed'
+        message: (error as Error).message || 'Network request failed'
       } as TwitchApiError;
     }
   }
